@@ -14,15 +14,28 @@ Receive DMX channel information and use it to control lights.
 
 //-----------------------------------------------------------------------------
 
+#if defined (__AVR_ATmega328P__) || defined (__AVR_ATmega328__)
+ #define LCD_RESET   PN(1,0)   /* D8, PB0 */
+ #define LCD_A0      PN(1,1)   /* D9, PB1 */
+ #define LCD_CS      PN(1,2)   /* D10, PB2 */
+ #define LCD_MOSI    PN(1,3)   /* D11, PB3 */
+ #define LCD_SCK     PN(1,5)   /* D13, PB5 */
+#elif defined(__AVR_ATmega32U4__)
+ #define LCD_RESET   PN(1,4)   /* D8, PB4 */
+ #define LCD_A0      PN(1,5)   /* D9, PB5 */
+ #define LCD_CS      PN(1,6)   /* D10, PB6 */
+ #define LCD_MOSI    PN(1,7)   /* D11, PB7 */
+ #define LCD_SCK     PN(2,7)   /* D13, PC7 */
+#else
+  #error "define the target processor"
+#endif
+
 u8g_t u8g;
 
 void u8g_setup(void)
 {
-    //U8GLIB_NHD_C12864 u8g(13, 11, 10, 9, 8);    // SPI Com: SCK = 13, MOSI = 11, CS = 10, A0 = 9, RST = 8
-    u8g_InitHWSPI(&u8g, &u8g_dev_st7565_nhd_c12864_hw_spi, PN(1, 5), PN(1, 3), U8G_PIN_NONE);
+    u8g_InitSPI(&u8g, &u8g_dev_st7565_nhd_c12864_sw_spi, LCD_SCK, LCD_MOSI, LCD_CS, LCD_A0, LCD_RESET);
 }
-
-uint8_t u8g_InitSPI(u8g_t *u8g, u8g_dev_t *dev, uint8_t sck, uint8_t mosi, uint8_t cs, uint8_t a0, uint8_t reset);
 
 void sys_init(void)
 {
