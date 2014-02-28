@@ -35,6 +35,7 @@ u8g_t u8g;
 void u8g_setup(void)
 {
     u8g_InitSPI(&u8g, &u8g_dev_st7565_nhd_c12864_sw_spi, LCD_SCK, LCD_MOSI, LCD_CS, LCD_A0, LCD_RESET);
+    u8g_SetContrastLL(&u8g, &u8g_dev_st7565_nhd_c12864_sw_spi, 0);
 }
 
 void sys_init(void)
@@ -46,8 +47,23 @@ void sys_init(void)
 
 void draw(void)
 {
-    u8g_SetFont(&u8g, u8g_font_6x10);
-    u8g_DrawStr(&u8g, 0, 15, "Hello World!");
+    size_t h, y;
+    int i, j, k;
+
+    u8g_SetFont(&u8g, u8g_font_unifont);
+    h = u8g_GetFontAscent(&u8g)-u8g_GetFontDescent(&u8g);
+    y = h;
+
+    k = 80;
+    for (i = 0; i < 5; i ++) {
+        char tmp[20];
+        for (j = 0; j < 16; j ++) {
+            tmp[j] = k;
+            k += 1;
+        }
+        u8g_DrawStr(&u8g, 0, y, tmp);
+        y += h;
+    }
 }
 
 int main(void)
